@@ -173,6 +173,11 @@
             margin-top: 10px;
         }
 
+        .btn-warning {
+            background: linear-gradient(90deg, #ffa500 0%, #ff6b6b 100%);
+            margin-top: 10px;
+        }
+
         .game-section {
             background: #f9f9f9;
             padding: 20px;
@@ -311,6 +316,18 @@
             line-height: 1.6;
         }
 
+        .face-analysis.error {
+            background: #f8d7da;
+            border: 2px solid #f5576c;
+            color: #721c24;
+        }
+
+        .face-analysis.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
         .mog-result {
             margin-top: 20px;
             padding: 20px;
@@ -368,6 +385,14 @@
             z-index: 2000;
             animation: slideIn 0.3s ease-out;
             max-width: 300px;
+        }
+
+        .notification.error {
+            background: #f5576c;
+        }
+
+        .notification.success {
+            background: #28a745;
         }
 
         @keyframes slideIn {
@@ -464,13 +489,66 @@
             60% { content: '..'; }
             80%, 100% { content: '...'; }
         }
+
+        .camera-setup {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .camera-setup h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .camera-setup ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .camera-setup li {
+            margin: 10px 0;
+        }
+
+        .face-detection-hint {
+            background: #d1ecf1;
+            border: 2px solid #0c5460;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #0c5460;
+            font-size: 0.95em;
+        }
+
+        .no-face-detected {
+            background: #f8d7da;
+            border: 2px solid #f5576c;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: #721c24;
+            margin: 20px 0;
+        }
+
+        .no-face-detected strong {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .retry-btn {
+            background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="header">
             <h1>🐧 Mog Penguin World</h1>
-            <p>AI Face Rating Battles - Fight Other Players!</p>
+            <p>AI Face Rating Battles - Real Face Detection Required!</p>
         </div>
 
         <div class="content">
@@ -533,6 +611,38 @@
         </div>
     </div>
 
+    <!-- CAMERA SETUP MODAL -->
+    <div id="cameraSetupModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeCameraSetup()">&times;</span>
+            <div class="modal-header">📷 Camera Setup Guide</div>
+            
+            <div class="camera-setup">
+                <h3>⚙️ How to Enable Your Camera:</h3>
+                <ol>
+                    <li><strong>Allow Permissions:</strong> When your browser asks for camera access, click "Allow"</li>
+                    <li><strong>Check Settings:</strong> Make sure your camera isn't disabled in browser settings</li>
+                    <li><strong>Try Different Browser:</strong> Chrome, Firefox, or Safari (not Internet Explorer)</li>
+                    <li><strong>Restart Browser:</strong> Close and reopen your browser</li>
+                    <li><strong>Check Device:</strong> Make sure your webcam/camera is not blocked</li>
+                </ol>
+            </div>
+
+            <div class="face-detection-hint">
+                <strong>💡 Pro Tips for Face Detection:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Good lighting is essential - face a window or lamp</li>
+                    <li>Keep your face centered in the camera</li>
+                    <li>Make sure your face takes up at least 30% of the screen</li>
+                    <li>Avoid shadows on your face</li>
+                </ul>
+            </div>
+
+            <button class="btn-success" onclick="testCamera()">🔄 Test Camera Now</button>
+            <button class="btn-secondary" onclick="closeCameraSetup()">Close</button>
+        </div>
+    </div>
+
     <!-- MOG BATTLE MODAL -->
     <div id="mogBattleModal" class="modal">
         <div class="modal-content">
@@ -552,7 +662,7 @@
             </div>
 
             <p class="section-description">
-                📷 Turn on your camera and make various facial expressions. The AI will analyze your face and compare it against your opponent!
+                📷 Your face MUST be detected by the AI to battle. Good lighting is key! Make sure your whole face is visible.
             </p>
 
             <div class="camera-container">
@@ -588,6 +698,35 @@
         </div>
     </div>
 
+    <!-- NO FACE DETECTED MODAL -->
+    <div id="noFaceModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeNoFaceModal()">&times;</span>
+            <div class="modal-header">❌ No Face Detected</div>
+            
+            <div class="no-face-detected">
+                <strong>⚠️ Your face was not detected!</strong>
+                <p style="margin: 15px 0;">
+                    The AI could not clearly see your face in the camera. A valid face detection is REQUIRED to battle!
+                </p>
+            </div>
+
+            <div class="face-detection-hint">
+                <strong>🎯 Try these tips:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>✅ Make sure you have good lighting (face a lamp or window)</li>
+                    <li>✅ Center your face in the camera frame</li>
+                    <li>✅ Keep your face at least 30% of the screen</li>
+                    <li>✅ Avoid shadows and dark backgrounds</li>
+                    <li>✅ Make sure your entire face is visible (not just half)</li>
+                </ul>
+            </div>
+
+            <button class="btn-warning" onclick="retryFaceAnalysis()">🔄 Try Again</button>
+            <button class="btn-secondary" onclick="closeMogBattle()">Quit Battle</button>
+        </div>
+    </div>
+
     <!-- ALL PLAYERS MODAL -->
     <div id="playersModal" class="modal">
         <div class="modal-content">
@@ -599,6 +738,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-api@0.0.7/dist/face-api.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection@0.0.5/dist/face-detection.js"></script>
 
     <script>
         // AI Players (NPCs)
@@ -624,6 +764,7 @@
 
         let currentBattle = null;
         let mogVideoStream = null;
+        let faceDetected = false;
 
         // Save/Load
         function saveGame() {
@@ -710,7 +851,8 @@
                             <strong>⭐ Face Rating:</strong> ${gameState.faceRating}/100<br>
                             <strong>⚔️ Battles Won:</strong> ${gameState.battlesWon}
                         </div>
-                        <button class="btn-success" style="margin-top: 20px;" onclick="goToLocation('battle')">⚔️ Find a Battle!</button>
+                        <button class="btn-success" style="margin-top: 20px;" onclick="openCameraSetup()">📷 Setup Camera First</button>
+                        <button class="btn-success" style="margin-top: 10px;" onclick="goToLocation('battle')">⚔️ Find a Battle!</button>
                     </div>
                 `;
             } else if (location === 'battle') {
@@ -719,19 +861,19 @@
                         <div style="font-size: 3em; text-align: center; margin: 20px 0;">⚔️</div>
                         <h2>Mog Battle Arena!</h2>
                         <p class="section-description">
-                            Challenge other penguins to Mog Battles! Your face gets rated based on features and expressions. Win battles to increase your Face Rating!
+                            Challenge other penguins to Mog Battles! Your FACE must be detected by the AI to battle. Good lighting is essential!
                         </p>
                         <div style="margin-top: 20px; background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                            <strong>📊 How it Works:</strong>
+                            <strong>⚠️ IMPORTANT:</strong>
                             <p style="margin-top: 10px; font-size: 0.9em; line-height: 1.6;">
-                                1. Choose an opponent<br>
-                                2. Enable your webcam<br>
-                                3. The AI analyzes your face features<br>
-                                4. Your face rating is compared to opponent<br>
-                                5. Higher rating wins and earns coins!
+                                • Your face MUST be clearly detected by AI<br>
+                                • Good lighting is REQUIRED<br>
+                                • No face detected = Battle ends immediately<br>
+                                • Make sure entire face is visible in camera
                             </p>
                         </div>
                         <button class="btn-success" style="margin-top: 20px;" onclick="openPlayersModal()">🐧 View Players</button>
+                        <button class="btn-warning" style="margin-top: 10px;" onclick="openCameraSetup()">📷 Camera Help</button>
                     </div>
                 `;
             } else if (location === 'leaderboard') {
@@ -779,6 +921,29 @@
             }
 
             mainArea.innerHTML = content;
+        }
+
+        // Camera Setup
+        function openCameraSetup() {
+            document.getElementById('cameraSetupModal').classList.add('active');
+        }
+
+        function closeCameraSetup() {
+            document.getElementById('cameraSetupModal').classList.remove('active');
+        }
+
+        async function testCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 320, height: 240 } 
+                });
+                stream.getTracks().forEach(track => track.stop());
+                showNotification('✅ Camera works perfectly! Ready to battle!', 'success');
+                closeCameraSetup();
+            } catch (err) {
+                showNotification('❌ Camera not accessible. Check browser permissions.', 'error');
+                console.error('Camera error:', err);
+            }
         }
 
         // Players Modal
@@ -831,19 +996,19 @@
         async function enableWebcam() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 320, height: 240 } 
+                    video: { width: 640, height: 480 } 
                 });
                 document.getElementById('mogVideo').srcObject = stream;
                 mogVideoStream = stream;
-                showNotification('Webcam ready! Click "Analyze My Face" when ready 📷');
+                showNotification('📷 Camera connected! Click "Analyze My Face" to battle!', 'success');
                 document.getElementById('faceAnalysisStatus').style.display = 'none';
             } catch (err) {
-                showNotification('Webcam access denied. Please enable camera permissions.');
-                console.error(err);
+                showNotification('❌ Cannot access camera. Go to Home for setup help.', 'error');
+                console.error('Camera error:', err);
             }
         }
 
-        // Analyze Face
+        // Analyze Face with Real Detection
         async function startMogAnalysis() {
             const video = document.getElementById('mogVideo');
             const canvas = document.getElementById('mogCanvas');
@@ -853,32 +1018,47 @@
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = 'Analyzing...';
             statusDiv.style.display = 'block';
-            statusDiv.innerHTML = '<div class="loading">Analyzing your face</div>';
+            statusDiv.innerHTML = '<div class="loading">Detecting your face</div>';
 
             try {
                 // Get canvas image
                 const ctx = canvas.getContext('2d');
-                canvas.width = video.videoWidth || 320;
-                canvas.height = video.videoHeight || 240;
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
                 ctx.drawImage(video, 0, 0);
 
-                // Simple AI scoring based on face detection
-                let faceScore = calculateFaceScore(canvas);
+                // Perform real face detection
+                const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
                 
-                if (faceScore === 0) {
-                    faceScore = Math.floor(Math.random() * 30) + 40; // 40-70 if no face detected
+                // Use face-api to detect faces
+                const detections = await faceapi.detectAllFaces(canvas);
+
+                if (!detections || detections.length === 0) {
+                    // NO FACE DETECTED - GAME OVER
                     statusDiv.innerHTML = `
-                        <strong>⚠️ No face detected</strong><br>
-                        Could not clearly see your face. Using default score: ${faceScore}/100<br>
-                        Try adjusting lighting or camera angle.
+                        <div class="face-analysis error">
+                            <strong>❌ NO FACE DETECTED!</strong><br>
+                            Your face could not be detected by the AI. Battle cannot proceed!
+                        </div>
                     `;
-                } else {
-                    statusDiv.innerHTML = `
-                        <strong>✅ Face Analyzed!</strong><br>
-                        Your Face Rating: <strong>${faceScore}/100</strong><br>
-                        <em style="font-size: 0.9em;">Based on facial symmetry, expression clarity, and camera quality.</em>
-                    `;
+                    setTimeout(() => {
+                        document.getElementById('noFaceModal').classList.add('active');
+                    }, 1000);
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = '📷 Analyze My Face';
+                    return;
                 }
+
+                // FACE DETECTED - Calculate score
+                let faceScore = calculateFaceScore(canvas, detections);
+                
+                statusDiv.innerHTML = `
+                    <div class="face-analysis success">
+                        <strong>✅ Face Detected!</strong><br>
+                        Your Face Rating: <strong>${faceScore}/100</strong><br>
+                        <em style="font-size: 0.9em;">Based on facial structure and camera quality.</em>
+                    </div>
+                `;
 
                 currentBattle.yourScore = faceScore;
 
@@ -918,9 +1098,9 @@
                 document.getElementById('coinsWonDisplay').textContent = `💰 Earned ${coinsWon} coins!`;
                 document.getElementById('mogResult').classList.add('show');
 
-                showNotification(`Battle Complete! +${coinsWon} coins! 🎉`);
+                showNotification(`✅ Battle Complete! +${coinsWon} coins! 🎉`, 'success');
             } catch (err) {
-                statusDiv.innerHTML = `<strong>❌ Error analyzing face:</strong> ${err.message}`;
+                statusDiv.innerHTML = `<div class="face-analysis error"><strong>❌ Error:</strong> ${err.message}</div>`;
                 console.error('Analysis error:', err);
             } finally {
                 analyzeBtn.disabled = false;
@@ -928,42 +1108,49 @@
             }
         }
 
-        // Simple face scoring algorithm
-        function calculateFaceScore(canvas) {
-            const ctx = canvas.getContext('2d');
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
+        function retryFaceAnalysis() {
+            closeNoFaceModal();
+            document.getElementById('faceAnalysisStatus').style.display = 'none';
+            document.getElementById('mogResult').classList.remove('show');
+        }
 
-            // Calculate brightness distribution (faces are typically mid-tone)
+        // Calculate face score based on detections
+        function calculateFaceScore(canvas, detections) {
+            if (!detections || detections.length === 0) return 0;
+
+            const detection = detections[0];
+            const box = detection.detection.box;
+            const canvasArea = canvas.width * canvas.height;
+            const faceArea = box.width * box.height;
+            const facePercentage = (faceArea / canvasArea) * 100;
+
+            // Score based on face size (should be at least 10% of frame)
+            let score = 50;
+            
+            if (facePercentage > 10 && facePercentage < 80) {
+                score += Math.min(30, facePercentage / 2);
+            }
+
+            // Add brightness analysis
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(box.x, box.y, box.width, box.height);
+            const data = imageData.data;
             let brightness = 0;
+            
             for (let i = 0; i < data.length; i += 4) {
                 brightness += (data[i] + data[i+1] + data[i+2]) / 3;
             }
             brightness = brightness / (data.length / 4);
 
-            // Calculate color variance (faces have consistent color)
-            let variance = 0;
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i], g = data[i+1], b = data[i+2];
-                variance += Math.abs(r - g) + Math.abs(g - b) + Math.abs(b - r);
-            }
-            variance = variance / (data.length / 4);
-
-            // Scoring algorithm
-            let score = 50; // Base score
-
-            // Brightness score (optimal is 80-150)
-            if (brightness > 40 && brightness < 200) {
-                score += Math.min(30, 30 - Math.abs(brightness - 120) / 10);
+            if (brightness > 60 && brightness < 200) {
+                score += Math.min(20, 20 - Math.abs(brightness - 130) / 10);
             }
 
-            // Variance score (lower variance = more consistent skin tone = higher score)
-            if (variance < 50) {
-                score += Math.min(20, (50 - variance) / 2.5);
-            }
+            return Math.min(100, Math.max(40, Math.floor(score)));
+        }
 
-            score = Math.min(100, Math.max(0, Math.floor(score)));
-            return score > 55 ? score : 0; // Return 0 if score too low (likely no face)
+        function closeNoFaceModal() {
+            document.getElementById('noFaceModal').classList.remove('active');
         }
 
         function closeMogBattle() {
@@ -977,9 +1164,9 @@
         }
 
         // Notifications
-        function showNotification(message) {
+        function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.className = 'notification';
+            notification.className = 'notification ' + type;
             notification.textContent = message;
             document.body.appendChild(notification);
 
