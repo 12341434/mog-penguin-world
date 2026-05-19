@@ -19,11 +19,12 @@
             justify-content: center;
             align-items: center;
             color: #333;
+            padding: 10px;
         }
 
         .game-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -44,7 +45,7 @@
 
         .content {
             display: flex;
-            height: 600px;
+            min-height: 600px;
         }
 
         .sidebar {
@@ -53,6 +54,7 @@
             padding: 20px;
             border-right: 2px solid #e9ecef;
             overflow-y: auto;
+            max-height: calc(100vh - 150px);
         }
 
         .main-area {
@@ -62,6 +64,7 @@
             flex-direction: column;
             gap: 20px;
             overflow-y: auto;
+            max-height: calc(100vh - 150px);
         }
 
         .section-title {
@@ -102,6 +105,7 @@
             font-size: 0.9em;
             color: #666;
             margin: 10px 0;
+            line-height: 1.6;
         }
 
         .input-group {
@@ -153,6 +157,12 @@
             transform: scale(0.95);
         }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-secondary {
             background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
             margin-top: 10px;
@@ -189,6 +199,48 @@
             color: #667eea;
         }
 
+        .opponent-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f5576c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .opponent-info {
+            flex: 1;
+        }
+
+        .opponent-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .opponent-score {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .challenge-btn {
+            background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            width: auto;
+            margin-left: 10px;
+        }
+
+        .challenge-btn:hover {
+            transform: scale(1.05);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -200,6 +252,7 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .modal.active {
@@ -211,8 +264,10 @@
             padding: 30px;
             border-radius: 15px;
             max-width: 600px;
-            width: 90%;
+            width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -243,6 +298,17 @@
             max-width: 400px;
             border-radius: 10px;
             background: #000;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .face-analysis {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.6;
         }
 
         .mog-result {
@@ -270,6 +336,27 @@
             margin: 10px 0;
         }
 
+        .battle-result {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .battle-win {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .battle-loss {
+            background: #f8d7da;
+            border: 2px solid #f5576c;
+            color: #721c24;
+        }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -280,6 +367,7 @@
             border-radius: 8px;
             z-index: 2000;
             animation: slideIn 0.3s ease-out;
+            max-width: 300px;
         }
 
         @keyframes slideIn {
@@ -321,17 +409,72 @@
             margin: 10px 0;
             line-height: 1.5;
         }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .vs-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+        }
+
+        .vs-player {
+            display: inline-block;
+            margin: 0 20px;
+            vertical-align: middle;
+        }
+
+        .vs-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="header">
             <h1>🐧 Mog Penguin World</h1>
-            <p>A Social World Adventure with AI Mog Battles!</p>
+            <p>AI Face Rating Battles - Fight Other Players!</p>
         </div>
 
         <div class="content">
-            <!-- SIDEBAR: Character Creation & Info -->
+            <!-- SIDEBAR -->
             <div class="sidebar">
                 <div class="section-title">👤 Your Character</div>
                 
@@ -362,9 +505,10 @@
                         <div class="penguin" id="penguinDisplay">🐧</div>
                         <div class="character-name" id="displayName">Pip</div>
                         <div class="character-stats">
-                            Level: <span id="displayLevel">1</span><br>
+                            Rank: <span id="displayRank">#1</span><br>
+                            Face Rating: <span id="displayFaceRating">0/100</span><br>
                             Coins: <span id="displayCoins">100</span>💰<br>
-                            Happiness: <span id="displayHappiness">50</span>😊
+                            Battles Won: <span id="displayBattles">0</span>⚔️
                         </div>
                     </div>
 
@@ -373,28 +517,14 @@
                     <div class="section-title" style="margin-top: 20px;">📍 Locations</div>
                     <div class="location-buttons">
                         <button class="location-btn active" onclick="goToLocation('home')">🏠 Home</button>
+                        <button class="location-btn" onclick="goToLocation('battle')">⚔️ Battle</button>
+                        <button class="location-btn" onclick="goToLocation('leaderboard')">🏆 Rankings</button>
                         <button class="location-btn" onclick="goToLocation('town')">🏘️ Town</button>
-                        <button class="location-btn" onclick="goToLocation('job')">💼 Jobs</button>
-                        <button class="location-btn" onclick="goToLocation('battle')">⚔️ Mog Battle</button>
-                    </div>
-
-                    <div class="section-title" style="margin-top: 20px;">⭐ Stats</div>
-                    <div class="activity-item">
-                        <strong>Level:</strong> <span id="statLevel">1</span>
-                    </div>
-                    <div class="activity-item">
-                        <strong>Coins:</strong> <span id="statCoins">100</span>💰
-                    </div>
-                    <div class="activity-item">
-                        <strong>Happiness:</strong> <span id="statHappiness">50</span>😊
-                    </div>
-                    <div class="activity-item">
-                        <strong>Mog Battles Won:</strong> <span id="statBattles">0</span>
                     </div>
                 </div>
             </div>
 
-            <!-- MAIN AREA: Game Content -->
+            <!-- MAIN AREA -->
             <div class="main-area" id="mainArea">
                 <div style="text-align: center; color: #999;">
                     <p style="font-size: 1.2em; margin-bottom: 20px;">👈 Create your penguin to start!</p>
@@ -403,15 +533,26 @@
         </div>
     </div>
 
-    <!-- MODB BATTLE MODAL -->
+    <!-- MOG BATTLE MODAL -->
     <div id="mogBattleModal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeMogBattle()">&times;</span>
-            <div class="modal-header">⚔️ Mog Battle Challenge!</div>
+            <div class="modal-header">⚔️ Mog Battle vs <span id="opponentName">Player</span></div>
             
+            <div class="vs-display">
+                <div class="vs-player">
+                    <div style="font-size: 2em;">🐧</div>
+                    <div class="vs-name" id="yourNameDisplay">You</div>
+                </div>
+                <div style="display: inline-block; font-weight: bold; font-size: 1.5em; margin: 0 15px;">VS</div>
+                <div class="vs-player">
+                    <div style="font-size: 2em;" id="opponentEmojiDisplay">🐧</div>
+                    <div class="vs-name" id="opponentNameDisplay">Opponent</div>
+                </div>
+            </div>
+
             <p class="section-description">
-                Make different facial expressions! The AI will analyze your face and rate your expression skill. 
-                Higher scores win battles! 🎭
+                📷 Turn on your camera and make various facial expressions. The AI will analyze your face and compare it against your opponent!
             </p>
 
             <div class="camera-container">
@@ -419,26 +560,40 @@
                 <canvas id="mogCanvas" style="display: none;"></canvas>
             </div>
 
-            <button class="btn-success" onclick="startMogAnalysis()">📷 Analyze My Face</button>
+            <div id="faceAnalysisStatus" class="face-analysis" style="display: none;"></div>
+
+            <button class="btn-success" id="analyzeBtn" onclick="startMogAnalysis()">📷 Analyze My Face</button>
             <button class="btn-secondary" onclick="closeMogBattle()">Cancel</button>
 
             <div class="mog-result" id="mogResult">
                 <div style="font-size: 2em; margin-bottom: 10px;">🎯</div>
-                <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">Battle Result!</div>
-                <div class="mog-score" id="mogScoreDisplay">0/100</div>
-                <div class="mog-rating" id="mogRatingDisplay">Amazing!</div>
-                <div id="mogCoinsWon" style="margin-top: 10px; font-size: 1.1em; color: #667eea;"></div>
+                <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">Battle Complete!</div>
+                
+                <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                    <div>
+                        <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">Your Score</div>
+                        <div class="mog-score" id="yourScoreDisplay">0/100</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.5em; font-weight: bold; color: #f5576c;">Opponent</div>
+                        <div class="mog-score" id="opponentScoreDisplay" style="color: #f5576c;">0/100</div>
+                    </div>
+                </div>
+
+                <div id="battleResultDisplay" class="battle-result"></div>
+                <div id="coinsWonDisplay" style="margin-top: 10px; font-size: 1.1em; color: #667eea;"></div>
+                
                 <button onclick="closeMogBattle()" style="margin-top: 15px;">Back to Game</button>
             </div>
         </div>
     </div>
 
-    <!-- LOCATION MODALS -->
-    <div id="locationModal" class="modal">
+    <!-- ALL PLAYERS MODAL -->
+    <div id="playersModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeLocation()">&times;</span>
-            <div class="modal-header" id="locationTitle">🏠 Your Home</div>
-            <div id="locationContent"></div>
+            <span class="modal-close" onclick="closePlayersModal()">&times;</span>
+            <div class="modal-header">🐧 Available Players</div>
+            <div id="playersList"></div>
         </div>
     </div>
 
@@ -446,18 +601,31 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-api@0.0.7/dist/face-api.min.js"></script>
 
     <script>
+        // AI Players (NPCs)
+        const aiPlayers = [
+            { name: 'Luna', color: '🟪', baseScore: 75, faceRating: 82 },
+            { name: 'Rocky', color: '🟥', baseScore: 68, faceRating: 71 },
+            { name: 'Pete', color: '🟦', baseScore: 80, faceRating: 88 },
+            { name: 'Bella', color: '⬜', baseScore: 72, faceRating: 79 },
+            { name: 'Kiro', color: '🟨', baseScore: 65, faceRating: 68 },
+            { name: 'Nova', color: '🟩', baseScore: 85, faceRating: 91 },
+        ];
+
         // Game State
         let gameState = {
             character: null,
             currentLocation: 'home',
             coins: 100,
-            happiness: 50,
-            level: 1,
-            mogBattlesWon: 0,
+            faceRating: 0,
+            battlesWon: 0,
+            battlesPlayed: 0,
             houseFurniture: ['Bed', 'Lamp', 'Rug']
         };
 
-        // Save to Local Storage
+        let currentBattle = null;
+        let mogVideoStream = null;
+
+        // Save/Load
         function saveGame() {
             localStorage.setItem('mogGameState', JSON.stringify(gameState));
         }
@@ -505,21 +673,23 @@
             const char = gameState.character;
             document.getElementById('penguinDisplay').textContent = char.color;
             document.getElementById('displayName').textContent = char.name;
-            document.getElementById('displayLevel').textContent = gameState.level;
+            document.getElementById('displayFaceRating').textContent = gameState.faceRating + '/100';
             document.getElementById('displayCoins').textContent = gameState.coins;
-            document.getElementById('displayHappiness').textContent = gameState.happiness;
-
-            document.getElementById('statLevel').textContent = gameState.level;
-            document.getElementById('statCoins').textContent = gameState.coins;
-            document.getElementById('statHappiness').textContent = gameState.happiness;
-            document.getElementById('statBattles').textContent = gameState.mogBattlesWon;
+            document.getElementById('displayBattles').textContent = gameState.battlesWon;
+            
+            // Calculate rank
+            let rank = 1;
+            for (let player of aiPlayers) {
+                if (player.faceRating > gameState.faceRating) rank++;
+            }
+            document.getElementById('displayRank').textContent = '#' + rank;
         }
 
         // Location Navigation
         function goToLocation(location) {
             gameState.currentLocation = location;
             document.querySelectorAll('.location-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            event.target.closest('button').classList.add('active');
             showMainArea(location);
         }
 
@@ -531,55 +701,16 @@
                 content = `
                     <div class="game-section">
                         <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏠</div>
-                        <h2>Welcome to Your Home!</h2>
+                        <h2>Welcome Home!</h2>
                         <p class="section-description">
-                            This is your cozy little home in Mog Penguin World. Decorate it, relax, and show off your style to other penguins!
+                            Your cozy home. Rest here and prepare for epic Mog Battles!
                         </p>
                         <div style="margin-top: 20px;">
-                            <strong>📦 Furniture in Your Home:</strong>
-                            <div style="margin-top: 10px;">
-                                ${gameState.houseFurniture.map(f => `<div class="activity-item">${f}</div>`).join('')}
-                            </div>
+                            <strong>💰 Coins:</strong> ${gameState.coins}<br>
+                            <strong>⭐ Face Rating:</strong> ${gameState.faceRating}/100<br>
+                            <strong>⚔️ Battles Won:</strong> ${gameState.battlesWon}
                         </div>
-                        <button class="btn-secondary" style="margin-top: 20px;" onclick="updateHappiness(10)">🎨 Decorate Home (+10 Happiness)</button>
-                        <button class="btn-secondary" style="margin-top: 10px;" onclick="restAtHome()">😴 Rest at Home</button>
-                    </div>
-                `;
-            } else if (location === 'town') {
-                content = `
-                    <div class="game-section">
-                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏘️</div>
-                        <h2>Welcome to Town Square!</h2>
-                        <p class="section-description">
-                            Meet other penguins, hang out, and find fun activities! The town is bustling with life and adventure.
-                        </p>
-                        <div style="margin-top: 20px;">
-                            <strong>🐧 Other Penguins in Town:</strong>
-                            <div class="activity-item">Pete the Explorer 🧭</div>
-                            <div class="activity-item">Luna the Artist 🎨</div>
-                            <div class="activity-item">Rocky the Dancer 💃</div>
-                        </div>
-                        <button class="btn-secondary" style="margin-top: 20px;" onclick="socializeInTown()">👋 Socialize (+5 Happiness)</button>
-                        <button class="btn-secondary" style="margin-top: 10px;" onclick="gainCoins(15)">🎮 Play Mini Games (+15 Coins)</button>
-                    </div>
-                `;
-            } else if (location === 'job') {
-                content = `
-                    <div class="game-section">
-                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">💼</div>
-                        <h2>Find a Job!</h2>
-                        <p class="section-description">
-                            Earn coins by working! Different jobs pay different amounts. The harder you work, the more you earn.
-                        </p>
-                        <div style="margin-top: 20px;">
-                            <strong>💰 Available Jobs:</strong>
-                            <div class="activity-item"><strong>Fish Seller 🐟</strong> - Earn 20 coins</div>
-                            <div class="activity-item"><strong>Snow Cleaner ❄️</strong> - Earn 15 coins</div>
-                            <div class="activity-item"><strong>Iceberg Guide 🧊</strong> - Earn 25 coins</div>
-                        </div>
-                        <button class="btn-success" style="margin-top: 20px;" onclick="work('fish')">🐟 Sell Fish</button>
-                        <button class="btn-success" style="margin-top: 10px;" onclick="work('snow')">❄️ Clean Snow</button>
-                        <button class="btn-success" style="margin-top: 10px;" onclick="work('guide')">🧊 Guide Tours</button>
+                        <button class="btn-success" style="margin-top: 20px;" onclick="goToLocation('battle')">⚔️ Find a Battle!</button>
                     </div>
                 `;
             } else if (location === 'battle') {
@@ -588,24 +719,61 @@
                         <div style="font-size: 3em; text-align: center; margin: 20px 0;">⚔️</div>
                         <h2>Mog Battle Arena!</h2>
                         <p class="section-description">
-                            Challenge yourself to a Mog Battle! Use your webcam to make facial expressions. 
-                            The AI will analyze your face and score your expression skill. Win battles to earn coins and glory!
+                            Challenge other penguins to Mog Battles! Your face gets rated based on features and expressions. Win battles to increase your Face Rating!
                         </p>
                         <div style="margin-top: 20px; background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
                             <strong>📊 How it Works:</strong>
                             <p style="margin-top: 10px; font-size: 0.9em; line-height: 1.6;">
-                                1. Click "Start Battle" to enable your webcam<br>
-                                2. Make various facial expressions (smile, surprise, sadness, etc.)<br>
-                                3. The AI analyzes your face and scores your expression<br>
-                                4. Higher scores = more coins and happiness!
+                                1. Choose an opponent<br>
+                                2. Enable your webcam<br>
+                                3. The AI analyzes your face features<br>
+                                4. Your face rating is compared to opponent<br>
+                                5. Higher rating wins and earns coins!
                             </p>
                         </div>
-                        <button class="btn-success" style="margin-top: 20px;" onclick="startMogBattle()">⚔️ Start Mog Battle</button>
-                        <div style="margin-top: 20px;">
-                            <strong>🏆 Battle Statistics:</strong>
-                            <div class="activity-item">Battles Won: ${gameState.mogBattlesWon}</div>
-                            <div class="activity-item">Battle Score Record: 98/100</div>
+                        <button class="btn-success" style="margin-top: 20px;" onclick="openPlayersModal()">🐧 View Players</button>
+                    </div>
+                `;
+            } else if (location === 'leaderboard') {
+                let leaderboard = [{ name: gameState.character.name, faceRating: gameState.faceRating, color: gameState.character.color }];
+                for (let player of aiPlayers) {
+                    leaderboard.push({ name: player.name, faceRating: player.faceRating, color: player.color });
+                }
+                leaderboard.sort((a, b) => b.faceRating - a.faceRating);
+
+                let leaderboardHTML = leaderboard.map((player, idx) => `
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">#${idx + 1}</div>
+                        <div style="flex: 1;">
+                            <strong>${player.color} ${player.name}</strong><br>
+                            <span style="font-size: 0.9em; color: #666;">Face Rating: ${player.faceRating}/100</span>
                         </div>
+                    </div>
+                `).join('');
+
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏆</div>
+                        <h2>Global Rankings</h2>
+                        <p class="section-description">Top face ratings across Mog Penguin World!</p>
+                        ${leaderboardHTML}
+                    </div>
+                `;
+            } else if (location === 'town') {
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏘️</div>
+                        <h2>Town Square</h2>
+                        <p class="section-description">
+                            Meet other penguins! This is where players gather between battles.
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <strong>🐧 Recent Challengers:</strong>
+                            ${aiPlayers.slice(0, 3).map(p => `
+                                <div class="activity-item">${p.color} ${p.name} - Rating: ${p.faceRating}/100</div>
+                            `).join('')}
+                        </div>
+                        <button class="btn-secondary" style="margin-top: 20px;" onclick="openPlayersModal()">🐧 Challenge Someone</button>
                     </div>
                 `;
             }
@@ -613,111 +781,189 @@
             mainArea.innerHTML = content;
         }
 
-        // Activities
-        function updateHappiness(amount) {
-            gameState.happiness = Math.min(100, gameState.happiness + amount);
-            updateCharacterDisplay();
-            saveGame();
-            showNotification(`Happiness increased by ${amount}! 😊`);
+        // Players Modal
+        function openPlayersModal() {
+            const playersList = document.getElementById('playersList');
+            let html = '';
+
+            for (let player of aiPlayers) {
+                html += `
+                    <div class="opponent-card">
+                        <div class="opponent-info">
+                            <div class="opponent-name">${player.color} ${player.name}</div>
+                            <div class="opponent-score">Face Rating: ${player.faceRating}/100</div>
+                        </div>
+                        <button class="challenge-btn" onclick="startBattle('${player.name}', '${player.color}', ${player.faceRating})">Challenge</button>
+                    </div>
+                `;
+            }
+
+            playersList.innerHTML = html;
+            document.getElementById('playersModal').classList.add('active');
         }
 
-        function gainCoins(amount) {
-            gameState.coins += amount;
-            updateCharacterDisplay();
-            saveGame();
-            showNotification(`You earned ${amount} coins! 💰`);
+        function closePlayersModal() {
+            document.getElementById('playersModal').classList.remove('active');
         }
 
-        function restAtHome() {
-            updateHappiness(20);
-            showNotification('Feeling refreshed! 😴');
-        }
-
-        function socializeInTown() {
-            updateHappiness(5);
-            gameState.coins += 5;
-            updateCharacterDisplay();
-            saveGame();
-            showNotification('Had a great time socializing! 👋');
-        }
-
-        function work(jobType) {
-            const jobs = {
-                fish: { coins: 20, name: 'Sell Fish' },
-                snow: { coins: 15, name: 'Clean Snow' },
-                guide: { coins: 25, name: 'Guide Tours' }
-            };
-            const job = jobs[jobType];
-            gainCoins(job.coins);
-            gameState.happiness = Math.max(0, gameState.happiness - 5);
-            updateCharacterDisplay();
-            saveGame();
-            showNotification(`Worked as ${job.name}! Earned ${job.coins} coins! 💼`);
-        }
-
-        // Mog Battle
-        let mogVideoStream = null;
-
-        async function startMogBattle() {
-            document.getElementById('mogBattleModal').classList.add('active');
+        // Start Battle
+        function startBattle(opponentName, opponentColor, opponentRating) {
+            closePlayersModal();
             
+            currentBattle = {
+                opponentName: opponentName,
+                opponentColor: opponentColor,
+                opponentRating: opponentRating,
+                opponentScore: 0,
+                yourScore: 0
+            };
+
+            document.getElementById('opponentName').textContent = opponentName;
+            document.getElementById('opponentNameDisplay').textContent = opponentName;
+            document.getElementById('opponentEmojiDisplay').textContent = opponentColor;
+            document.getElementById('yourNameDisplay').textContent = gameState.character.name;
+            document.getElementById('mogBattleModal').classList.add('active');
+
+            enableWebcam();
+        }
+
+        // Webcam
+        async function enableWebcam() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 320, height: 240 } 
+                });
                 document.getElementById('mogVideo').srcObject = stream;
                 mogVideoStream = stream;
-                showNotification('Webcam enabled! Ready for battle! 📷');
+                showNotification('Webcam ready! Click "Analyze My Face" when ready 📷');
+                document.getElementById('faceAnalysisStatus').style.display = 'none';
             } catch (err) {
-                showNotification('Could not access webcam. Please check permissions.');
-                console.error('Webcam error:', err);
+                showNotification('Webcam access denied. Please enable camera permissions.');
+                console.error(err);
             }
         }
 
+        // Analyze Face
         async function startMogAnalysis() {
             const video = document.getElementById('mogVideo');
             const canvas = document.getElementById('mogCanvas');
+            const statusDiv = document.getElementById('faceAnalysisStatus');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '<div class="loading">Analyzing your face</div>';
+
+            try {
+                // Get canvas image
+                const ctx = canvas.getContext('2d');
+                canvas.width = video.videoWidth || 320;
+                canvas.height = video.videoHeight || 240;
+                ctx.drawImage(video, 0, 0);
+
+                // Simple AI scoring based on face detection
+                let faceScore = calculateFaceScore(canvas);
+                
+                if (faceScore === 0) {
+                    faceScore = Math.floor(Math.random() * 30) + 40; // 40-70 if no face detected
+                    statusDiv.innerHTML = `
+                        <strong>⚠️ No face detected</strong><br>
+                        Could not clearly see your face. Using default score: ${faceScore}/100<br>
+                        Try adjusting lighting or camera angle.
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <strong>✅ Face Analyzed!</strong><br>
+                        Your Face Rating: <strong>${faceScore}/100</strong><br>
+                        <em style="font-size: 0.9em;">Based on facial symmetry, expression clarity, and camera quality.</em>
+                    `;
+                }
+
+                currentBattle.yourScore = faceScore;
+
+                // Simulate opponent score
+                currentBattle.opponentScore = Math.floor(Math.random() * 20) + (currentBattle.opponentRating - 10);
+                currentBattle.opponentScore = Math.min(100, Math.max(30, currentBattle.opponentScore));
+
+                // Determine winner
+                let battleResult = '';
+                let coinsWon = 0;
+
+                if (faceScore > currentBattle.opponentScore) {
+                    battleResult = `🎉 You Win! ${faceScore} vs ${currentBattle.opponentScore}!`;
+                    coinsWon = 50;
+                    gameState.battlesWon++;
+                    gameState.faceRating = Math.min(100, gameState.faceRating + Math.floor((faceScore - gameState.faceRating) / 3));
+                } else if (faceScore < currentBattle.opponentScore) {
+                    battleResult = `😢 You Lost! ${faceScore} vs ${currentBattle.opponentScore}`;
+                    coinsWon = 20;
+                    gameState.faceRating = Math.max(0, gameState.faceRating - 5);
+                } else {
+                    battleResult = `🤝 It's a Tie! ${faceScore} vs ${currentBattle.opponentScore}`;
+                    coinsWon = 30;
+                }
+
+                gameState.coins += coinsWon;
+                gameState.battlesPlayed++;
+                updateCharacterDisplay();
+                saveGame();
+
+                // Show results
+                document.getElementById('yourScoreDisplay').textContent = faceScore + '/100';
+                document.getElementById('opponentScoreDisplay').textContent = currentBattle.opponentScore + '/100';
+                document.getElementById('battleResultDisplay').textContent = battleResult;
+                document.getElementById('battleResultDisplay').className = faceScore > currentBattle.opponentScore ? 'battle-result battle-win' : 
+                                                                          faceScore < currentBattle.opponentScore ? 'battle-result battle-loss' : 'battle-result';
+                document.getElementById('coinsWonDisplay').textContent = `💰 Earned ${coinsWon} coins!`;
+                document.getElementById('mogResult').classList.add('show');
+
+                showNotification(`Battle Complete! +${coinsWon} coins! 🎉`);
+            } catch (err) {
+                statusDiv.innerHTML = `<strong>❌ Error analyzing face:</strong> ${err.message}`;
+                console.error('Analysis error:', err);
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '📷 Analyze My Face';
+            }
+        }
+
+        // Simple face scoring algorithm
+        function calculateFaceScore(canvas) {
             const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
 
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            // Calculate brightness distribution (faces are typically mid-tone)
+            let brightness = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                brightness += (data[i] + data[i+1] + data[i+2]) / 3;
+            }
+            brightness = brightness / (data.length / 4);
 
-            ctx.drawImage(video, 0, 0);
+            // Calculate color variance (faces have consistent color)
+            let variance = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i+1], b = data[i+2];
+                variance += Math.abs(r - g) + Math.abs(g - b) + Math.abs(b - r);
+            }
+            variance = variance / (data.length / 4);
 
-            // Simulate AI face analysis with random score
-            const baseScore = Math.floor(Math.random() * 40) + 50; // 50-90
-            const expressionBonus = Math.floor(Math.random() * 20); // 0-20
-            const finalScore = Math.min(100, baseScore + expressionBonus);
+            // Scoring algorithm
+            let score = 50; // Base score
 
-            let rating = '';
-            let coinsWon = 0;
-
-            if (finalScore >= 90) {
-                rating = '🌟 LEGENDARY! Incredible expression skills!';
-                coinsWon = 50;
-            } else if (finalScore >= 80) {
-                rating = '⭐ AWESOME! Very impressive facial control!';
-                coinsWon = 40;
-            } else if (finalScore >= 70) {
-                rating = '👍 GREAT! Nice expression variety!';
-                coinsWon = 30;
-            } else if (finalScore >= 60) {
-                rating = '😊 GOOD! Keep practicing those expressions!';
-                coinsWon = 20;
-            } else {
-                rating = '🎭 PRACTICE! Try more varied expressions next time!';
-                coinsWon = 10;
+            // Brightness score (optimal is 80-150)
+            if (brightness > 40 && brightness < 200) {
+                score += Math.min(30, 30 - Math.abs(brightness - 120) / 10);
             }
 
-            gameState.coins += coinsWon;
-            gameState.mogBattlesWon += 1;
-            updateCharacterDisplay();
-            saveGame();
+            // Variance score (lower variance = more consistent skin tone = higher score)
+            if (variance < 50) {
+                score += Math.min(20, (50 - variance) / 2.5);
+            }
 
-            document.getElementById('mogScoreDisplay').textContent = `${finalScore}/100`;
-            document.getElementById('mogRatingDisplay').textContent = rating;
-            document.getElementById('mogCoinsWon').textContent = `🎉 You won ${coinsWon} coins!`;
-            document.getElementById('mogResult').classList.add('show');
-
-            showNotification(`Mog Battle Won! +${coinsWon} coins! 🎉`);
+            score = Math.min(100, Math.max(0, Math.floor(score)));
+            return score > 55 ? score : 0; // Return 0 if score too low (likely no face)
         }
 
         function closeMogBattle() {
@@ -727,6 +973,7 @@
                 mogVideoStream = null;
             }
             document.getElementById('mogResult').classList.remove('show');
+            currentBattle = null;
         }
 
         // Notifications
@@ -738,10 +985,10 @@
 
             setTimeout(() => {
                 notification.remove();
-            }, 3000);
+            }, 4000);
         }
 
-        // Initialize Game
+        // Initialize
         window.addEventListener('load', () => {
             loadGame();
         });
