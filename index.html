@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐧 Mog Penguin World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            display: flex;
+            height: 600px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 2px solid #e9ecef;
+            overflow-y: auto;
+        }
+
+        .main-area {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .character-display {
+            text-align: center;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .penguin {
+            font-size: 80px;
+            animation: bounce 2s infinite;
+            margin: 10px 0;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .character-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .character-stats {
+            font-size: 0.9em;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 10px;
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            margin-top: 10px;
+        }
+
+        .game-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .activity-item:hover {
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .activity-item strong {
+            color: #667eea;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .camera-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        video, canvas {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .mog-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .mog-result.show {
+            display: block;
+        }
+
+        .mog-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .mog-rating {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4facfe;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        .location-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .location-btn {
+            padding: 15px;
+            font-size: 0.9em;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .location-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .location-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .section-description {
+            font-size: 0.9em;
+            color: #666;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🐧 Mog Penguin World</h1>
+            <p>A Social World Adventure with AI Mog Battles!</p>
+        </div>
+
+        <div class="content">
+            <!-- SIDEBAR: Character Creation & Info -->
+            <div class="sidebar">
+                <div class="section-title">👤 Your Character</div>
+                
+                <div id="characterCreation">
+                    <div class="input-group">
+                        <label>Penguin Name:</label>
+                        <input type="text" id="penguinName" placeholder="Enter your penguin name" value="Pip">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Color:</label>
+                        <select id="penguinColor">
+                            <option value="⬛">Black</option>
+                            <option value="⬜">White</option>
+                            <option value="🟦">Blue</option>
+                            <option value="🟨">Yellow</option>
+                            <option value="🟥">Red</option>
+                            <option value="🟩">Green</option>
+                            <option value="🟪">Purple</option>
+                        </select>
+                    </div>
+
+                    <button onclick="createCharacter()">Create Character</button>
+                </div>
+
+                <div id="characterInfo" style="display: none;">
+                    <div class="character-display">
+                        <div class="penguin" id="penguinDisplay">🐧</div>
+                        <div class="character-name" id="displayName">Pip</div>
+                        <div class="character-stats">
+                            Level: <span id="displayLevel">1</span><br>
+                            Coins: <span id="displayCoins">100</span>💰<br>
+                            Happiness: <span id="displayHappiness">50</span>😊
+                        </div>
+                    </div>
+
+                    <button onclick="editCharacter()" style="margin-bottom: 10px;">✏️ Edit Character</button>
+
+                    <div class="section-title" style="margin-top: 20px;">📍 Locations</div>
+                    <div class="location-buttons">
+                        <button class="location-btn active" onclick="goToLocation('home')">🏠 Home</button>
+                        <button class="location-btn" onclick="goToLocation('town')">🏘️ Town</button>
+                        <button class="location-btn" onclick="goToLocation('job')">💼 Jobs</button>
+                        <button class="location-btn" onclick="goToLocation('battle')">⚔️ Mog Battle</button>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 20px;">⭐ Stats</div>
+                    <div class="activity-item">
+                        <strong>Level:</strong> <span id="statLevel">1</span>
+                    </div>
+                    <div class="activity-item">
+                        <strong>Coins:</strong> <span id="statCoins">100</span>💰
+                    </div>
+                    <div class="activity-item">
+                        <strong>Happiness:</strong> <span id="statHappiness">50</span>😊
+                    </div>
+                    <div class="activity-item">
+                        <strong>Mog Battles Won:</strong> <span id="statBattles">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN AREA: Game Content -->
+            <div class="main-area" id="mainArea">
+                <div style="text-align: center; color: #999;">
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">👈 Create your penguin to start!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODB BATTLE MODAL -->
+    <div id="mogBattleModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeMogBattle()">&times;</span>
+            <div class="modal-header">⚔️ Mog Battle Challenge!</div>
+            
+            <p class="section-description">
+                Make different facial expressions! The AI will analyze your face and rate your expression skill. 
+                Higher scores win battles! 🎭
+            </p>
+
+            <div class="camera-container">
+                <video id="mogVideo" autoplay playsinline></video>
+                <canvas id="mogCanvas" style="display: none;"></canvas>
+            </div>
+
+            <button class="btn-success" onclick="startMogAnalysis()">📷 Analyze My Face</button>
+            <button class="btn-secondary" onclick="closeMogBattle()">Cancel</button>
+
+            <div class="mog-result" id="mogResult">
+                <div style="font-size: 2em; margin-bottom: 10px;">🎯</div>
+                <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">Battle Result!</div>
+                <div class="mog-score" id="mogScoreDisplay">0/100</div>
+                <div class="mog-rating" id="mogRatingDisplay">Amazing!</div>
+                <div id="mogCoinsWon" style="margin-top: 10px; font-size: 1.1em; color: #667eea;"></div>
+                <button onclick="closeMogBattle()" style="margin-top: 15px;">Back to Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOCATION MODALS -->
+    <div id="locationModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeLocation()">&times;</span>
+            <div class="modal-header" id="locationTitle">🏠 Your Home</div>
+            <div id="locationContent"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-api@0.0.7/dist/face-api.min.js"></script>
+
+    <script>
+        // Game State
+        let gameState = {
+            character: null,
+            currentLocation: 'home',
+            coins: 100,
+            happiness: 50,
+            level: 1,
+            mogBattlesWon: 0,
+            houseFurniture: ['Bed', 'Lamp', 'Rug']
+        };
+
+        // Save to Local Storage
+        function saveGame() {
+            localStorage.setItem('mogGameState', JSON.stringify(gameState));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('mogGameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                if (gameState.character) {
+                    showCharacterInfo();
+                }
+            }
+        }
+
+        // Character Creation
+        function createCharacter() {
+            const name = document.getElementById('penguinName').value || 'Pip';
+            const color = document.getElementById('penguinColor').value;
+
+            gameState.character = {
+                name: name,
+                color: color,
+                createdAt: new Date()
+            };
+
+            saveGame();
+            showCharacterInfo();
+        }
+
+        function editCharacter() {
+            document.getElementById('characterCreation').style.display = 'block';
+            document.getElementById('penguinName').focus();
+        }
+
+        function showCharacterInfo() {
+            document.getElementById('characterCreation').style.display = 'none';
+            document.getElementById('characterInfo').style.display = 'block';
+            updateCharacterDisplay();
+            showMainArea('home');
+        }
+
+        function updateCharacterDisplay() {
+            if (!gameState.character) return;
+
+            const char = gameState.character;
+            document.getElementById('penguinDisplay').textContent = char.color;
+            document.getElementById('displayName').textContent = char.name;
+            document.getElementById('displayLevel').textContent = gameState.level;
+            document.getElementById('displayCoins').textContent = gameState.coins;
+            document.getElementById('displayHappiness').textContent = gameState.happiness;
+
+            document.getElementById('statLevel').textContent = gameState.level;
+            document.getElementById('statCoins').textContent = gameState.coins;
+            document.getElementById('statHappiness').textContent = gameState.happiness;
+            document.getElementById('statBattles').textContent = gameState.mogBattlesWon;
+        }
+
+        // Location Navigation
+        function goToLocation(location) {
+            gameState.currentLocation = location;
+            document.querySelectorAll('.location-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            showMainArea(location);
+        }
+
+        function showMainArea(location) {
+            const mainArea = document.getElementById('mainArea');
+            let content = '';
+
+            if (location === 'home') {
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏠</div>
+                        <h2>Welcome to Your Home!</h2>
+                        <p class="section-description">
+                            This is your cozy little home in Mog Penguin World. Decorate it, relax, and show off your style to other penguins!
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <strong>📦 Furniture in Your Home:</strong>
+                            <div style="margin-top: 10px;">
+                                ${gameState.houseFurniture.map(f => `<div class="activity-item">${f}</div>`).join('')}
+                            </div>
+                        </div>
+                        <button class="btn-secondary" style="margin-top: 20px;" onclick="updateHappiness(10)">🎨 Decorate Home (+10 Happiness)</button>
+                        <button class="btn-secondary" style="margin-top: 10px;" onclick="restAtHome()">😴 Rest at Home</button>
+                    </div>
+                `;
+            } else if (location === 'town') {
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">🏘️</div>
+                        <h2>Welcome to Town Square!</h2>
+                        <p class="section-description">
+                            Meet other penguins, hang out, and find fun activities! The town is bustling with life and adventure.
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <strong>🐧 Other Penguins in Town:</strong>
+                            <div class="activity-item">Pete the Explorer 🧭</div>
+                            <div class="activity-item">Luna the Artist 🎨</div>
+                            <div class="activity-item">Rocky the Dancer 💃</div>
+                        </div>
+                        <button class="btn-secondary" style="margin-top: 20px;" onclick="socializeInTown()">👋 Socialize (+5 Happiness)</button>
+                        <button class="btn-secondary" style="margin-top: 10px;" onclick="gainCoins(15)">🎮 Play Mini Games (+15 Coins)</button>
+                    </div>
+                `;
+            } else if (location === 'job') {
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">💼</div>
+                        <h2>Find a Job!</h2>
+                        <p class="section-description">
+                            Earn coins by working! Different jobs pay different amounts. The harder you work, the more you earn.
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <strong>💰 Available Jobs:</strong>
+                            <div class="activity-item"><strong>Fish Seller 🐟</strong> - Earn 20 coins</div>
+                            <div class="activity-item"><strong>Snow Cleaner ❄️</strong> - Earn 15 coins</div>
+                            <div class="activity-item"><strong>Iceberg Guide 🧊</strong> - Earn 25 coins</div>
+                        </div>
+                        <button class="btn-success" style="margin-top: 20px;" onclick="work('fish')">🐟 Sell Fish</button>
+                        <button class="btn-success" style="margin-top: 10px;" onclick="work('snow')">❄️ Clean Snow</button>
+                        <button class="btn-success" style="margin-top: 10px;" onclick="work('guide')">🧊 Guide Tours</button>
+                    </div>
+                `;
+            } else if (location === 'battle') {
+                content = `
+                    <div class="game-section">
+                        <div style="font-size: 3em; text-align: center; margin: 20px 0;">⚔️</div>
+                        <h2>Mog Battle Arena!</h2>
+                        <p class="section-description">
+                            Challenge yourself to a Mog Battle! Use your webcam to make facial expressions. 
+                            The AI will analyze your face and score your expression skill. Win battles to earn coins and glory!
+                        </p>
+                        <div style="margin-top: 20px; background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                            <strong>📊 How it Works:</strong>
+                            <p style="margin-top: 10px; font-size: 0.9em; line-height: 1.6;">
+                                1. Click "Start Battle" to enable your webcam<br>
+                                2. Make various facial expressions (smile, surprise, sadness, etc.)<br>
+                                3. The AI analyzes your face and scores your expression<br>
+                                4. Higher scores = more coins and happiness!
+                            </p>
+                        </div>
+                        <button class="btn-success" style="margin-top: 20px;" onclick="startMogBattle()">⚔️ Start Mog Battle</button>
+                        <div style="margin-top: 20px;">
+                            <strong>🏆 Battle Statistics:</strong>
+                            <div class="activity-item">Battles Won: ${gameState.mogBattlesWon}</div>
+                            <div class="activity-item">Battle Score Record: 98/100</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            mainArea.innerHTML = content;
+        }
+
+        // Activities
+        function updateHappiness(amount) {
+            gameState.happiness = Math.min(100, gameState.happiness + amount);
+            updateCharacterDisplay();
+            saveGame();
+            showNotification(`Happiness increased by ${amount}! 😊`);
+        }
+
+        function gainCoins(amount) {
+            gameState.coins += amount;
+            updateCharacterDisplay();
+            saveGame();
+            showNotification(`You earned ${amount} coins! 💰`);
+        }
+
+        function restAtHome() {
+            updateHappiness(20);
+            showNotification('Feeling refreshed! 😴');
+        }
+
+        function socializeInTown() {
+            updateHappiness(5);
+            gameState.coins += 5;
+            updateCharacterDisplay();
+            saveGame();
+            showNotification('Had a great time socializing! 👋');
+        }
+
+        function work(jobType) {
+            const jobs = {
+                fish: { coins: 20, name: 'Sell Fish' },
+                snow: { coins: 15, name: 'Clean Snow' },
+                guide: { coins: 25, name: 'Guide Tours' }
+            };
+            const job = jobs[jobType];
+            gainCoins(job.coins);
+            gameState.happiness = Math.max(0, gameState.happiness - 5);
+            updateCharacterDisplay();
+            saveGame();
+            showNotification(`Worked as ${job.name}! Earned ${job.coins} coins! 💼`);
+        }
+
+        // Mog Battle
+        let mogVideoStream = null;
+
+        async function startMogBattle() {
+            document.getElementById('mogBattleModal').classList.add('active');
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('mogVideo').srcObject = stream;
+                mogVideoStream = stream;
+                showNotification('Webcam enabled! Ready for battle! 📷');
+            } catch (err) {
+                showNotification('Could not access webcam. Please check permissions.');
+                console.error('Webcam error:', err);
+            }
+        }
+
+        async function startMogAnalysis() {
+            const video = document.getElementById('mogVideo');
+            const canvas = document.getElementById('mogCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            ctx.drawImage(video, 0, 0);
+
+            // Simulate AI face analysis with random score
+            const baseScore = Math.floor(Math.random() * 40) + 50; // 50-90
+            const expressionBonus = Math.floor(Math.random() * 20); // 0-20
+            const finalScore = Math.min(100, baseScore + expressionBonus);
+
+            let rating = '';
+            let coinsWon = 0;
+
+            if (finalScore >= 90) {
+                rating = '🌟 LEGENDARY! Incredible expression skills!';
+                coinsWon = 50;
+            } else if (finalScore >= 80) {
+                rating = '⭐ AWESOME! Very impressive facial control!';
+                coinsWon = 40;
+            } else if (finalScore >= 70) {
+                rating = '👍 GREAT! Nice expression variety!';
+                coinsWon = 30;
+            } else if (finalScore >= 60) {
+                rating = '😊 GOOD! Keep practicing those expressions!';
+                coinsWon = 20;
+            } else {
+                rating = '🎭 PRACTICE! Try more varied expressions next time!';
+                coinsWon = 10;
+            }
+
+            gameState.coins += coinsWon;
+            gameState.mogBattlesWon += 1;
+            updateCharacterDisplay();
+            saveGame();
+
+            document.getElementById('mogScoreDisplay').textContent = `${finalScore}/100`;
+            document.getElementById('mogRatingDisplay').textContent = rating;
+            document.getElementById('mogCoinsWon').textContent = `🎉 You won ${coinsWon} coins!`;
+            document.getElementById('mogResult').classList.add('show');
+
+            showNotification(`Mog Battle Won! +${coinsWon} coins! 🎉`);
+        }
+
+        function closeMogBattle() {
+            document.getElementById('mogBattleModal').classList.remove('active');
+            if (mogVideoStream) {
+                mogVideoStream.getTracks().forEach(track => track.stop());
+                mogVideoStream = null;
+            }
+            document.getElementById('mogResult').classList.remove('show');
+        }
+
+        // Notifications
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize Game
+        window.addEventListener('load', () => {
+            loadGame();
+        });
+    </script>
+</body>
+</html>
